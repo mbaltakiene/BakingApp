@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Baking Time</string>
+    <string name="untitled_recipe">Untitled</string>
+    <string name="title_activity_details">Recipe Details</string>
+    <string name="title_activity_steps">Recipe Step</string>
+
+    <!-- ExoPlayer -->
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="restart">Restart</string>
+    <string name="notification_description">Baking Time Video</string>
+
+    <!-- Navigation buttons -->
+    <string name="prev_button">Prev</string>
+    <string name="next_button">Next</string>
+
+    <!-- Error messages -->
+    <string name="no_recipes">No recipes to display.</string>
+    <string name="no_video">No video to preview.</string>
+    <string name="no_internet">No internet connection.</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
+    <!-- Widget -->
+    <string name="default_widget_text">Ingredients\' list will appear here for the selected recipe.</string>
+    <string name="settings_add_to_widget_item">Add to widget</string>
+    <string name="settings_remove_from_widget_item">Remove from widget</string>
+    <string name="delete_failed">Error while removing the recipe.</string>
+    <string name="delete_successful">Recipe was removed from the widget.</string>
+    <string name="insert_failed">Error adding to the widget.</string>
+    <string name="insert_successful">Recipe was added to the widget.</string>
+
+</resources>

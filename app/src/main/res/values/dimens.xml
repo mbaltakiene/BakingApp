@@ -1,0 +1,18 @@
+<resources>
+    <dimen name="tablet_layout_width">400dp</dimen>
+    <dimen name="line_width">1dp</dimen>
+    <dimen name="padding">4dp</dimen>
+    <dimen name="margin_indent">24dp</dimen>
+    <dimen name="margin_vertical">8dp</dimen>
+    <dimen name="recipe_step_height">40dp</dimen>
+    <dimen name="recipe_height">48dp</dimen>
+
+    <!-- Refer to App Widget Documentation for margin information
+    http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout  -->
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="seek_bar_height">32dp</dimen>
+    <dimen name="min_dimension">40dp</dimen>
+    <dimen name="text_size">14sp</dimen>
+
+
+</resources>
