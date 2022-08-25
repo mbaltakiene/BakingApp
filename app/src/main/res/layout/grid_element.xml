@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    tools:context="com.example.android.bakingapp.ui.MainActivity">
-
-    <TextView
-        android:id="@+id/recipe_name_text_view"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/recipe_height"
-        android:layout_marginBottom="@dimen/margin_vertical"
-        android:layout_marginLeft="@dimen/margin_indent"
-        android:layout_marginRight="@dimen/margin_indent"
-        android:layout_marginTop="@dimen/margin_vertical"
-        android:background="@color/colorPrimary"
-        android:fontFamily="sans-serif-black"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textAppearance="?android:textAppearanceSmall"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold"
-        tools:text="Cheese cake" />
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        tools:context="com.example.android.bakingapp.ui.MainActivity">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/recipe_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/recipe_height"
+            android:layout_marginBottom="@dimen/margin_vertical"
+            android:layout_marginLeft="@dimen/margin_indent"
+            android:layout_marginRight="@dimen/margin_indent"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:background="@color/colorPrimary"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            tools:text="Cheese cake" />
+
+    </FrameLayout>
+</layout>
