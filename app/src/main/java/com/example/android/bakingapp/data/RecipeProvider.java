@@ -7,11 +7,12 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.android.bakingapp.data.RecipeContract.RecipeEntry;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created by margarita baltakiene on 29/06/2018.
@@ -31,7 +32,8 @@ public class RecipeProvider extends ContentProvider {
     static {
         // URI patterns that the provider should recognize.
         sUriMatcher.addURI(RecipeContract.CONTENT_AUTHORITY, RecipeContract.PATH_RECIPES, RECIPES);
-        sUriMatcher.addURI(RecipeContract.CONTENT_AUTHORITY, RecipeContract.PATH_RECIPES + "/#", RECIPE_ID);
+        sUriMatcher.addURI(RecipeContract.CONTENT_AUTHORITY, RecipeContract.PATH_RECIPES
+                + "/#", RECIPE_ID);
     }
 
     /* Database helper object */

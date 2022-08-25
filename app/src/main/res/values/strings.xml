@@ -29,5 +29,7 @@
     <string name="delete_successful">Recipe was removed from the widget.</string>
     <string name="insert_failed">Error adding to the widget.</string>
     <string name="insert_successful">Recipe was added to the widget.</string>
+    <string name="channel_name">MY_CHANNEL</string>
+    <string name="channel_description">Description</string>
 
 </resources>

@@ -1,13 +1,17 @@
 package com.example.android.bakingapp.ui;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.android.bakingapp.R;
+import com.example.android.bakingapp.databinding.IngredientsItemBinding;
+import com.example.android.bakingapp.databinding.StepsItemBinding;
+import com.example.android.bakingapp.model.Recipe;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 /**
@@ -30,26 +34,39 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     @Override
     public IngredientsAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        final IngredientsAdapterViewHolder viewHolder;
+        boolean shouldAttachToParentImmediately = false;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        IngredientsItemBinding iBinding = null;
+        StepsItemBinding sBinding = null;
+        View view;
+
         int layoutItem = 0;
         switch (viewType) {
             case INGREDIENTS_VIEW:
                 layoutItem = R.layout.ingredients_item;
+                iBinding = DataBindingUtil.inflate(inflater, layoutItem,
+                        viewGroup, shouldAttachToParentImmediately);
                 break;
             case STEPS_VIEW:
                 layoutItem = R.layout.steps_item;
+                sBinding = DataBindingUtil.inflate(inflater, layoutItem,
+                        viewGroup, shouldAttachToParentImmediately);
+
                 break;
         }
-
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutItem, viewGroup, shouldAttachToParentImmediately);
-        final IngredientsAdapterViewHolder viewHolder = new IngredientsAdapterViewHolder(view);
+        if (iBinding != null) {
+            view = iBinding.getRoot();
+            viewHolder = new IngredientsAdapterViewHolder(iBinding);
+        } else {
+            view = sBinding.getRoot();
+            viewHolder = new IngredientsAdapterViewHolder(sBinding);
+        }
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onItemClick(viewHolder.getAdapterPosition());
+                mListener.onItemClick(viewHolder.getAbsoluteAdapterPosition());
             }
         });
 
@@ -91,9 +108,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                     quantity = "";
                 }
 
-                holder.mIngredientTV.setText(ingredient);
+                holder.ingredientsItemBinding.ingredientsLabelTextView.setText(ingredient);
                 String measureAndQuantity = quantity + " " + measure;
-                holder.mMeasureTV.setText(measureAndQuantity);
+                holder.ingredientsItemBinding.ingredientsMeasureTextView.setText(measureAndQuantity);
                 break;
             case STEPS_VIEW:
                 String description = mRecipe.getSteps().get(position - mRecipe.getIngredients().size()).getShortDescription();
@@ -102,7 +119,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                     description = "";
                 }
 
-                holder.mStepLabelTV.setText(description);
+                holder.stepsItemBinding.stepLabelTextView.setText(description);
                 break;
         }
 
@@ -118,20 +135,19 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         void onItemClick(int position);
     }
 
+    public static class IngredientsAdapterViewHolder extends RecyclerView.ViewHolder {
+        private IngredientsItemBinding ingredientsItemBinding;
+        private StepsItemBinding stepsItemBinding;
 
-    public class IngredientsAdapterViewHolder extends RecyclerView.ViewHolder {
-
-        public final TextView mIngredientTV;
-        public final TextView mMeasureTV;
-        public final TextView mStepLabelTV;
-        public IngredientsAdapterViewHolder(View view) {
-            super(view);
-            mIngredientTV = (TextView) view.findViewById(R.id.ingredients_label_text_view);
-            mMeasureTV = (TextView) view.findViewById(R.id.ingredients_measure_text_view);
-            mStepLabelTV = (TextView) view.findViewById(R.id.step_label_text_view);
-
+        public IngredientsAdapterViewHolder(IngredientsItemBinding ingredientsItemBinding) {
+            super(ingredientsItemBinding.getRoot());
+            this.ingredientsItemBinding = ingredientsItemBinding;
         }
 
+        public IngredientsAdapterViewHolder(StepsItemBinding stepsItemBinding) {
+            super(stepsItemBinding.getRoot());
+            this.stepsItemBinding = stepsItemBinding;
+        }
     }
 
 }

@@ -1,13 +1,17 @@
 package com.example.android.bakingapp.ui;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.IdlingResource;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.android.bakingapp.R;
+import com.example.android.bakingapp.databinding.ActivityMainBinding;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.test.espresso.IdlingResource;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -18,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        Log.v("MAIN activity", "MAIN activity");
+        ActivityMainBinding mBinding =
+                DataBindingUtil.setContentView(this, R.layout.activity_main);
     }
 
     @VisibleForTesting

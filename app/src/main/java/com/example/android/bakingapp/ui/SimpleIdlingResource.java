@@ -3,17 +3,18 @@ package com.example.android.bakingapp.ui;
 /**
  * Created by margarita baltakiene on 30/06/2018.
  */
-import android.support.annotation.Nullable;
-import android.support.test.espresso.IdlingResource;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SimpleIdlingResource implements IdlingResource{
+import androidx.annotation.Nullable;
+import androidx.test.espresso.IdlingResource;
+
+public class SimpleIdlingResource implements IdlingResource {
 
     @Nullable
     private volatile ResourceCallback mCallback;
 
-    // Idleness is controlled with this boolean.
+    // Idleness is controlled with this boolean
     private AtomicBoolean mIsIdleNow = new AtomicBoolean(true);
 
     @Override
@@ -33,6 +34,7 @@ public class SimpleIdlingResource implements IdlingResource{
 
     /**
      * Sets the new idle state, if isIdleNow is true, it pings the {@link ResourceCallback}.
+     *
      * @param isIdleNow false if there are pending operations, true if idle.
      */
     public void setIdleState(boolean isIdleNow) {

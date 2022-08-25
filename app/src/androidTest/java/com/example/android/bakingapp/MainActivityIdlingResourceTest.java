@@ -1,8 +1,5 @@
 package com.example.android.bakingapp;
 
-import android.support.test.espresso.IdlingRegistry;
-import android.support.test.espresso.IdlingResource;
-import android.support.test.rule.ActivityTestRule;
 import android.widget.GridView;
 
 import com.example.android.bakingapp.ui.MainActivity;
@@ -12,9 +9,15 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.rule.ActivityTestRule;
+
+import static androidx.test.espresso.Espresso.onData;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.anything;
 
 /**
@@ -25,14 +28,16 @@ public class MainActivityIdlingResourceTest {
 
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule
-            = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
 
     private IdlingResource mIdlingResource;
 
     @Before
     public void registerIdlingResource() {
-        mIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
+        mActivityScenarioRule.getScenario().onActivity(activity -> {
+            mIdlingResource = activity.getIdlingResource();
+        });
         // To prove that the test fails, omit this call:
         IdlingRegistry.getInstance().register(mIdlingResource);
     }

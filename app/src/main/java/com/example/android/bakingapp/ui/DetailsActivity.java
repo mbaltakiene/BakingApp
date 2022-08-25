@@ -1,46 +1,40 @@
 package com.example.android.bakingapp.ui;
 
-import android.app.LoaderManager;
-import android.content.ContentValues;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
+
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.IdlingResource;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.android.bakingapp.R;
-import com.example.android.bakingapp.RecipeWidgetService;
 import com.example.android.bakingapp.data.RecipeContract.RecipeEntry;
+import com.example.android.bakingapp.databinding.ActivityDetailsBinding;
+import com.example.android.bakingapp.model.Recipe;
+import com.example.android.bakingapp.viewmodel.DetailsActivityViewModel;
+import com.example.android.bakingapp.widget.RecipeWidgetService;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.test.espresso.IdlingResource;
 
 /**
  * Created by margarita baltakiene on 24/06/2018.
  */
 
 public class DetailsActivity extends AppCompatActivity implements
-        IngredientsAdapter.OnItemClickListener, VideoStepsFragment.OnButtonClickListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        IngredientsAdapter.OnItemClickListener, VideoStepsFragment.OnButtonClickListener {
 
     /**
      * Extra key from MainActivity
      */
     private static final String EXTRA_KEY = "recipe";
-
-    /**
-     * Identifier for the recipe data loader
-     */
-    private static final int RECIPE_DETAILS_LOADER = 0;
 
     /**
      * Recipe object from MainActivity
@@ -53,7 +47,7 @@ public class DetailsActivity extends AppCompatActivity implements
     private boolean mTwoPane;
 
     /**
-     * Variable to whether the recipe has been added to widget
+     * Variable to distinguish whether the recipe has been added to widget
      */
     private boolean addedToWidget = false;
 
@@ -63,21 +57,40 @@ public class DetailsActivity extends AppCompatActivity implements
     @Nullable
     private SimpleIdlingResource mIdlingResource;
 
+    /**
+     * Binding views object
+     */
+    private ActivityDetailsBinding mBinding;
+
+    /**
+     * View model for DetailsActivity
+     */
+    private DetailsActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
         setTitle(R.string.title_activity_details);
 
-
         mRecipe = getIntent().getParcelableExtra(EXTRA_KEY);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_details);
+        mViewModel = new DetailsActivityViewModel(getApplication(), mRecipe.getRecipeId());
+        mBinding.setDetailActivityViewModel(mViewModel);
 
         mIdlingResource = (SimpleIdlingResource) getIdlingResource();
 
-        getLoaderManager().initLoader(RECIPE_DETAILS_LOADER, null, this);
+        final Observer<Boolean> deleteInsertObserver = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable final Boolean isDeleted) {
+                if (mIdlingResource != null) {
+                    mIdlingResource.setIdleState(true);
+                }
+                addedToWidget = !Boolean.TRUE.equals(mViewModel.isDeleted.getValue());
+            }
+        };
+        mViewModel.isDeleted.observe(this, deleteInsertObserver);
 
-        if (findViewById(R.id.steps_container) != null) {
+        if (mBinding.stepsContainer != null) {
             mTwoPane = true;
         } else {
             mTwoPane = false;
@@ -109,7 +122,7 @@ public class DetailsActivity extends AppCompatActivity implements
     public void onBackPressed() {
         // If the back is pressed when Video Steps Container displayed,
         // the ingredients list will be shown
-        if ((findViewById(R.id.video_steps_container) != null && !mTwoPane)) {
+        if (findViewById(R.id.steps_container) != null && !mTwoPane) {
             setTitle(R.string.title_activity_details);
             IngredientsListFragment ingredientsFragment = new IngredientsListFragment();
             ingredientsFragment.setArguments(getIntent().getExtras());
@@ -130,19 +143,19 @@ public class DetailsActivity extends AppCompatActivity implements
             videoStepsFragment.setArguments(getIntent().getExtras());
             videoStepsFragment.setListIndex(position - startingPositionInList);
             if (mTwoPane) {
-                videoStepsFragment.setTwoPane(mTwoPane);
+                videoStepsFragment.setTwoPane(true);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.steps_container, videoStepsFragment)
                         .commit();
             } else {
-                setTitle(mRecipe.getSteps().get(position - startingPositionInList).getShortDescription());
+                setTitle(mRecipe.getSteps().get(position -
+                        startingPositionInList).getShortDescription());
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.ingredients_container, videoStepsFragment)
                         .commit();
             }
         }
     }
-
 
     @Override
     public void onButtonClick(int position) {
@@ -165,6 +178,7 @@ public class DetailsActivity extends AppCompatActivity implements
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem addWidget = menu.findItem(R.id.action_add);
         MenuItem removeWidget = menu.findItem(R.id.action_remove);
+
         if (addedToWidget) {
             addWidget.setVisible(false);
             removeWidget.setVisible(true);
@@ -177,6 +191,7 @@ public class DetailsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
         if (id == R.id.action_add) {
             insertRecipe();
@@ -187,7 +202,7 @@ public class DetailsActivity extends AppCompatActivity implements
             deleteRecipe();
             return true;
         } else if (id == android.R.id.home) {
-            if ((findViewById(R.id.video_steps_container) != null && !mTwoPane)) {
+            if (findViewById(R.id.video_steps_container) != null && !mTwoPane) {
                 setTitle(R.string.title_activity_details);
                 IngredientsListFragment ingredientsFragment = new IngredientsListFragment();
                 ingredientsFragment.setArguments(getIntent().getExtras());
@@ -199,16 +214,14 @@ public class DetailsActivity extends AppCompatActivity implements
                 NavUtils.navigateUpFromSameTask(DetailsActivity.this);
                 return true;
             }
-
-
         }
         return false;
     }
 
     private void deleteRecipe() {
-        String selection = RecipeEntry.COLUMN_RECIPE_ID + "=" + mRecipe.getRecipeId();
         // Call the ContentResolver to delete the recipe at the given content recipe id.
-        int rowsDeleted = getContentResolver().delete(RecipeEntry.CONTENT_URI, selection, null);
+        int rowsDeleted = mViewModel.deleteRecipe(RecipeEntry.COLUMN_RECIPE_ID + "=" +
+                mRecipe.getRecipeId());
         if (rowsDeleted == 0) {
             // No rows were deleted.
             Toast.makeText(this, getString(R.string.delete_failed),
@@ -221,28 +234,9 @@ public class DetailsActivity extends AppCompatActivity implements
         }
     }
 
-
     private void insertRecipe() {
-        ContentValues values = new ContentValues();
-
-        int id = mRecipe.getRecipeId();
-        String title = mRecipe.getRecipeName();
-        ArrayList<Ingredient> ingredients = (ArrayList<Ingredient>) mRecipe.getIngredients();
-
-        String ingredientList = "";
-        for (Ingredient i : ingredients) {
-            String name = i.getName();
-            String quantity = i.getQuantity();
-            String measure = i.getMeasure();
-            ingredientList = ingredientList + name + ": " + quantity + " " + measure + "\n";
-        }
-
-        values.put(RecipeEntry.COLUMN_RECIPE_ID, id);
-        values.put(RecipeEntry.COLUMN_RECIPE_NAME, title);
-        values.put(RecipeEntry.COLUMN_RECIPE_INGREDIENTS, ingredientList);
-
-
-        Uri newUri = getContentResolver().insert(RecipeEntry.CONTENT_URI, values);
+        //Uri newUri = getContentResolver().insert(RecipeEntry.CONTENT_URI, values);
+        Uri newUri = mViewModel.insertRecipe(mRecipe);
         if (newUri == null) {
             // There was an error with insertion.
             Toast.makeText(this, getString(R.string.insert_failed),
@@ -255,41 +249,4 @@ public class DetailsActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        // Define a projection that contains recipe id
-        String[] projection = {
-                RecipeEntry._ID,
-                RecipeEntry.COLUMN_RECIPE_ID};
-
-        String selection = RecipeEntry.COLUMN_RECIPE_ID + "=" + mRecipe.getRecipeId();
-
-        // This loader will execute the ContentProvider's query method on a background thread
-        return new CursorLoader(this,
-                RecipeEntry.CONTENT_URI,
-                projection,
-                selection,
-                null,
-                null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        if (mIdlingResource != null) {
-            mIdlingResource.setIdleState(true);
-        }
-        if (cursor == null || cursor.getCount() < 1) {
-            addedToWidget = false;
-            return;
-        }
-        if (cursor.moveToFirst()) {
-            addedToWidget = true;
-        }
-        cursor.close();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        addedToWidget = false;
-    }
 }

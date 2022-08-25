@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/master_list_fragment"
-    android:name="com.example.android.bakingapp.ui.MasterListFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</fragment>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/master_list_fragment"
+        android:name="com.example.android.bakingapp.ui.RecipeListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.fragment.app.FragmentContainerView>
+
+</layout>

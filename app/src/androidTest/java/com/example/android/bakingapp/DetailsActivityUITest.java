@@ -1,27 +1,31 @@
 package com.example.android.bakingapp;
 
 import android.content.Intent;
-import android.support.test.espresso.IdlingRegistry;
-import android.support.test.espresso.IdlingResource;
-import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.rule.ActivityTestRule;
-import android.support.v7.widget.RecyclerView;
+
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.rule.ActivityTestRule;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.android.bakingapp.ui.DetailsActivity;
-import com.example.android.bakingapp.ui.Recipe;
+import com.example.android.bakingapp.model.Recipe;
+import com.example.android.bakingapp.ui.MainActivity;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.not;
 
 
@@ -34,30 +38,26 @@ public class DetailsActivityUITest {
     private static final String EXTRA_KEY = "recipe";
 
     @Rule
-    public ActivityTestRule<DetailsActivity> mActivityTestRule =
-            new ActivityTestRule<DetailsActivity>(DetailsActivity.class) {
-                @Override
-                protected Intent getActivityIntent() {
-                    Recipe recipeMock = Recipe.mockObject();
-                    Intent intent = new Intent();
-                    intent.putExtra(EXTRA_KEY, recipeMock);
-
-                    return intent;
-                }
-            };
+    public ActivityScenarioRule<DetailsActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(DetailsActivity.class);
 
     private IdlingResource mIdlingResource;
 
     @Before
     public void registerIdlingResource() {
-        mIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
+        mActivityScenarioRule.getScenario().onActivity(activity -> {
+            Recipe recipeMock = Recipe.mockObject();
+            activity.getIntent().putExtra(EXTRA_KEY, recipeMock);
+            mIdlingResource = activity.getIdlingResource();
+        });
+
         IdlingRegistry.getInstance().register(mIdlingResource);
     }
 
-
     /**
      * Test positions the element on {@link RecyclerView} and clicks on it.
-     * The new fragment should be displayed with the description {@link TextView} and Next {@link Button}.
+     * The new fragment should be displayed with the
+     * description {@link TextView} and Next {@link Button}.
      * The {@link Button} Prev is hidden.
      */
     @Test

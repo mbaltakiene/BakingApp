@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.example.android.bakingapp.R;
+import com.example.android.bakingapp.databinding.GridElementBinding;
+import com.example.android.bakingapp.model.Recipe;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import androidx.databinding.DataBindingUtil;
 
 /**
  * Created by margarita baltakiene on 24/06/2018.
@@ -49,34 +51,36 @@ public class MasterListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View grid;
+
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        TextView recipeNameTV;
-        if (convertView == null) {
-            grid = inflater.inflate(R.layout.grid_element, null);
 
-        } else {
-            grid = (View) convertView;
+        GridElementBinding binding;
+
+        if(convertView == null) {
+            binding = DataBindingUtil.inflate(inflater, R.layout.grid_element,
+                    parent, false);
+            convertView = binding.getRoot();
+            convertView.setTag(binding);
         }
-
-        recipeNameTV = (TextView) grid.findViewById(R.id.recipe_name_text_view);
+        else {
+            binding = (GridElementBinding) convertView.getTag();
+        }
 
         if (mRecipeData.get(position).getRecipeName() != null) {
-            recipeNameTV.setText(mRecipeData.get(position).getRecipeName());
+            binding.recipeNameTextView.setText(mRecipeData.get(position).getRecipeName());
         } else {
-            recipeNameTV.setText(R.string.untitled_recipe);
+            binding.recipeNameTextView.setText(R.string.untitled_recipe);
         }
+        return binding.getRoot();
+    }
 
-        return grid;
+    public List<Recipe> getRecipeData() {
+        return mRecipeData;
     }
 
     public void setRecipeData(List<Recipe> recipes) {
         mRecipeData = recipes;
         notifyDataSetChanged();
-    }
-
-    public List<Recipe> getRecipeData() {
-        return mRecipeData;
     }
 
 }

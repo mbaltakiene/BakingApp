@@ -1,0 +1,42 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="recipeListViewModel"
+            type="com.example.android.bakingapp.viewmodel.RecipeListViewModel" />
+    </data>
+
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark">
+
+        <GridView
+            android:id="@+id/master_list_grid_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:horizontalSpacing="@dimen/margin_vertical"
+            android:numColumns="1"
+            android:stretchMode="columnWidth">
+
+        </GridView>
+
+        <!-- Empty view is only visible when there are no recipes or no Internet connection. -->
+        <TextView
+            android:id="@+id/error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:visibility="invisible"
+            tools:text="@string/no_internet" />
+
+    </RelativeLayout>
+
+</layout>

@@ -2,10 +2,6 @@ package com.example.android.bakingapp;
 
 import android.app.Activity;
 import android.app.Instrumentation.ActivityResult;
-import android.support.test.espresso.IdlingRegistry;
-import android.support.test.espresso.IdlingResource;
-import android.support.test.espresso.intent.rule.IntentsTestRule;
-import android.support.test.runner.AndroidJUnit4;
 import android.widget.GridView;
 
 import com.example.android.bakingapp.ui.MainActivity;
@@ -16,13 +12,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.Intents.intending;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import static androidx.test.espresso.Espresso.onData;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.isInternal;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.IsNot.not;
@@ -37,14 +39,19 @@ public class MainActivityIntentTest {
     private static final String EXTRA_KEY = "recipe";
 
     @Rule
-    public IntentsTestRule<MainActivity> mIntentTestRule = new IntentsTestRule<>(
-            MainActivity.class);
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
 
     private IdlingResource mIdlingResource;
 
     @Before
     public void registerIdlingResource() {
-        mIdlingResource = mIntentTestRule.getActivity().getIdlingResource();
+        mActivityScenarioRule.getScenario().onActivity(new ActivityScenario.ActivityAction<MainActivity>() {
+            @Override
+            public void perform(MainActivity activity) {
+                mIdlingResource = activity.getIdlingResource();
+            }
+        });
         IdlingRegistry.getInstance().register(mIdlingResource);
     }
 
